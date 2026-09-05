@@ -57,64 +57,133 @@ export function HomeView() {
       <section className="relative min-h-[88vh] flex items-center pt-20 pb-12 overflow-hidden">
         {/* Background layers */}
         <div className="absolute inset-0 pointer-events-none">
-          <StarField count={120} withShootingStars />
+          {/* Animated aurora gradient overlay */}
+          <div className="absolute inset-0 opacity-50 animate-aurora-shift"
+            style={{
+              background: "linear-gradient(120deg, oklch(0.30 0.15 290 / 0.25) 0%, oklch(0.30 0.15 220 / 0.2) 40%, oklch(0.30 0.15 320 / 0.25) 100%)",
+              backgroundSize: "200% 100%",
+            }}
+          />
+          <StarField count={180} withShootingStars />
           {/* Nebula blobs */}
-          <div className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] rounded-full opacity-40 blur-3xl animate-drift"
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] rounded-full opacity-40 blur-3xl animate-drift"
             style={{ background: "radial-gradient(circle, oklch(0.45 0.20 290), transparent 70%)" }}
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div className="absolute bottom-1/4 right-1/4 w-[35vw] h-[35vw] rounded-full opacity-30 blur-3xl animate-float"
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-[35vw] h-[35vw] rounded-full opacity-30 blur-3xl animate-float"
             style={{ background: "radial-gradient(circle, oklch(0.50 0.18 220), transparent 70%)" }}
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           />
+          <motion.div
+            className="absolute top-1/2 left-2/3 w-[28vw] h-[28vw] rounded-full opacity-25 blur-3xl"
+            style={{ background: "radial-gradient(circle, oklch(0.55 0.20 330), transparent 70%)" }}
+            animate={{ scale: [1, 1.25, 1], rotate: [0, 30, 0] }}
+            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+          />
+          {/* Vignette */}
+          <div className="absolute inset-0" style={{
+            background: "radial-gradient(ellipse 100% 80% at 50% 50%, transparent 40%, oklch(0.04 0.01 270 / 0.6) 100%)",
+          }} />
         </div>
 
         <div className="container mx-auto px-6 relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-4xl mx-auto text-center"
           >
-            {/* Floating planet decoration */}
-            <div className="flex justify-center mb-8">
-              <div className="relative h-24 w-24">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-accent to-primary animate-pulse-glow" />
-                <div className="absolute inset-2 rounded-full bg-background/80 backdrop-blur flex items-center justify-center">
-                  <Telescope className="h-8 w-8 text-primary" />
+            {/* Floating planet decoration with orbiting satellites */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2, type: "spring", stiffness: 100 }}
+              className="flex justify-center mb-8"
+            >
+              <div className="relative h-32 w-32">
+                {/* Outer glow halo */}
+                <div className="absolute -inset-8 rounded-full opacity-30 blur-2xl"
+                  style={{ background: "radial-gradient(circle, oklch(0.72 0.18 245), transparent 70%)" }}
+                />
+                {/* Core planet with breathing pulse */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-accent to-primary animate-breathe"
+                  style={{ boxShadow: "0 0 60px oklch(0.72 0.18 245 / 0.6)" }}
+                />
+                <div className="absolute inset-2 rounded-full bg-background/90 backdrop-blur flex items-center justify-center">
+                  <Telescope className="h-10 w-10 text-primary" />
                 </div>
-                {/* Orbital rings */}
+                {/* Multiple orbital rings */}
                 <div className="absolute -inset-3 rounded-full border border-primary/20 animate-spin-slow" />
-                <div className="absolute -inset-6 rounded-full border border-accent/15 animate-spin-slow" style={{ animationDirection: "reverse" }} />
-                {/* Orbiting planet */}
-                <div className="absolute -inset-3 animate-spin-slow">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 h-3 w-3 rounded-full bg-accent shadow-[0_0_12px_oklch(0.78_0.20_320)]" />
+                <div className="absolute -inset-7 rounded-full border border-accent/15 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "90s" }} />
+                <div className="absolute -inset-12 rounded-full border border-white/5 animate-spin-slow" style={{ animationDuration: "120s" }} />
+                {/* Orbiting planet 1 — magenta */}
+                <div className="absolute -inset-3 animate-spin-slow" style={{ animationDuration: "12s" }}>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-accent shadow-[0_0_16px_oklch(0.78_0.20_320)]" />
+                </div>
+                {/* Orbiting planet 2 — blue, slower, opposite direction */}
+                <div className="absolute -inset-7 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "20s" }}>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_12px_oklch(0.72_0.18_245)]" />
+                </div>
+                {/* Orbiting comet — tiny, fastest */}
+                <div className="absolute -inset-12 animate-spin-slow" style={{ animationDuration: "8s" }}>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs text-muted-foreground mb-6">
-              <Sparkles className="h-3 w-3 text-primary" />
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs text-muted-foreground mb-6"
+            >
+              <Sparkles className="h-3 w-3 text-primary animate-pulse" />
               <span>Discover 1,200+ cosmic destinations worldwide</span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-6"
+            >
               Explore the{" "}
               <span className="text-gradient-cosmic">Universe</span>.
               <br />
               From <span className="text-gradient-aurora">Earth</span>.
-            </h1>
+            </motion.h1>
 
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+              className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+            >
               Discover the world's best places to see the stars, explore space,
               and experience the cosmos — from the darkest deserts to the
               highest mountain observatories on the planet.
-            </p>
+            </motion.p>
 
             {/* Search bar */}
-            <div className="max-w-2xl mx-auto mb-6">
-              <GlassCard variant="strong" className="p-2">
+            <motion.div
+              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+              className="max-w-2xl mx-auto mb-6"
+            >
+              <GlassCard variant="strong" className="p-2 group hover:glow-primary transition-all duration-500">
                 <div className="flex items-center gap-2">
                   <div className="pl-3">
-                    <Search className="h-5 w-5 text-muted-foreground" />
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Search className="h-5 w-5 text-primary" />
+                    </motion.div>
                   </div>
                   <input
                     type="text"
@@ -124,64 +193,108 @@ export function HomeView() {
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     className="flex-1 bg-transparent border-0 outline-none text-sm placeholder:text-muted-foreground px-2"
                   />
-                  <button
+                  <motion.button
                     onClick={handleSearch}
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all hover:glow-primary"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all hover:glow-primary relative overflow-hidden"
                   >
-                    <span className="hidden sm:inline">Search</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
+                    <span className="hidden sm:inline relative z-10">Search</span>
+                    <ArrowRight className="h-4 w-4 relative z-10 group-hover:translate-x-0.5 transition-transform" />
+                  </motion.button>
                 </div>
               </GlassCard>
-            </div>
+            </motion.div>
 
             {/* Search options */}
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
-              {SEARCH_OPTIONS.map((opt) => (
-                <button
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+              className="flex flex-wrap justify-center gap-2 mb-8"
+            >
+              {SEARCH_OPTIONS.map((opt, i) => (
+                <motion.button
                   key={opt.label}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.1 + i * 0.05, duration: 0.3 }}
+                  whileHover={{ scale: 1.06, y: -2 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => handleCategoryClick(opt.category)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass text-xs hover:bg-white/10 hover:border-primary/40 transition-all"
                 >
-                  <span className="text-sm">{opt.emoji}</span>
+                  <motion.span
+                    className="text-sm"
+                    whileHover={{ scale: 1.2, rotate: 8 }}
+                  >
+                    {opt.emoji}
+                  </motion.span>
                   {opt.label}
-                </button>
+                </motion.button>
               ))}
-            </div>
+            </motion.div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <button
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.3, duration: 0.5 }}
+              className="flex flex-wrap items-center justify-center gap-3"
+            >
+              <motion.button
                 onClick={() => navigate("explore")}
-                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:glow-primary transition-all"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:glow-primary transition-all relative overflow-hidden"
               >
-                <MapPin className="h-4 w-4" />
-                Explore Locations
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button
+                <motion.div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                  style={{ background: "linear-gradient(110deg, transparent 30%, oklch(1 0 0 / 0.2) 50%, transparent 70%)" }}
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "100%" }}
+                  transition={{ duration: 0.6 }}
+                />
+                <MapPin className="h-4 w-4 relative z-10" />
+                <span className="relative z-10">Explore Locations</span>
+                <ArrowRight className="h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+              </motion.button>
+              <motion.button
                 onClick={() => navigate("events")}
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 className="group flex items-center gap-2 px-6 py-3 rounded-xl glass-strong hover:glow-accent transition-all font-medium"
               >
                 <Calendar className="h-4 w-4" />
                 Upcoming Events
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto mt-12">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.5, duration: 0.6 }}
+              className="grid grid-cols-3 gap-4 max-w-xl mx-auto mt-12"
+            >
               {[
                 { value: "1,200+", label: "Destinations" },
                 { value: "240+", label: "Upcoming Events" },
                 { value: "85K", label: "Stargazers" },
-              ].map((s) => (
-                <div key={s.label} className="text-center">
+              ].map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.5 + i * 0.1, duration: 0.5 }}
+                  className="text-center"
+                >
                   <div className="text-2xl md:text-3xl font-bold text-gradient-cosmic">{s.value}</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{s.label}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>

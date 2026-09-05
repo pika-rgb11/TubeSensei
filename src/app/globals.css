@@ -178,6 +178,8 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    background-size: 200% auto;
+    animation: gradientShift 8s ease-in-out infinite;
   }
   .text-gradient-aurora {
     background: linear-gradient(135deg, oklch(0.82 0.16 200) 0%, oklch(0.72 0.18 245) 50%, oklch(0.78 0.20 320) 100%);
@@ -185,6 +187,8 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    background-size: 200% auto;
+    animation: gradientShift 6s ease-in-out infinite;
   }
 
   /* Orbital animation */
@@ -211,6 +215,45 @@
   }
   .animate-drift {
     animation: drift 14s ease-in-out infinite alternate;
+  }
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% auto;
+  }
+  .animate-breathe {
+    animation: breathe 5s ease-in-out infinite;
+  }
+  .animate-rotate-3d {
+    animation: rotate3d 18s linear infinite;
+    transform-style: preserve-3d;
+  }
+  .animate-aurora-shift {
+    animation: auroraShift 8s ease-in-out infinite;
+  }
+  .animate-slide-up-fade {
+    animation: slideUpFade 0.6s ease-out forwards;
+  }
+  .animate-elastic-in {
+    animation: elasticIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .animate-stagger-fade-in {
+    animation: staggerFadeIn 0.5s ease-out forwards;
+    opacity: 0;
+  }
+  .animate-glow-pulse {
+    animation: glowPulse 2.5s ease-in-out infinite;
+  }
+  .animate-orbiting-planet {
+    animation: orbitingPlanet 12s linear infinite;
+    transform-origin: center;
+  }
+  .animate-tilt {
+    animation: tilt 8s ease-in-out infinite;
+  }
+  .animate-shine-sweep {
+    background: linear-gradient(110deg, transparent 30%, oklch(1 0 0 / 0.15) 50%, transparent 70%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease-in-out infinite;
   }
   .animate-shooting-star {
     animation: shootingStar 5s ease-out infinite;
@@ -291,6 +334,62 @@
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.92; }
+}
+
+@keyframes rotate3d {
+  0% { transform: rotateX(0deg) rotateY(0deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes auroraShift {
+  0%, 100% { transform: translateX(0%) scale(1); opacity: 0.4; }
+  50% { transform: translateX(10%) scale(1.1); opacity: 0.6; }
+}
+
+@keyframes slideUpFade {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes elasticIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  70% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+@keyframes staggerFadeIn {
+  0% { transform: translateY(15px) scale(0.95); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px oklch(0.72 0.18 245 / 0.3); }
+  50% { box-shadow: 0 0 32px oklch(0.72 0.18 245 / 0.6), 0 0 64px oklch(0.72 0.18 245 / 0.3); }
+}
+
+@keyframes orbitingPlanet {
+  from {
+    transform: rotate(0deg) translateX(48px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(48px) rotate(-360deg);
+  }
+}
+
+@keyframes tilt {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
 }
 
 .skeleton-shimmer {

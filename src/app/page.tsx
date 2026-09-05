@@ -5,6 +5,7 @@ import { useAppStore } from "@/store/app-store";
 import { TopNav } from "@/components/layout/TopNav";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Footer } from "@/components/layout/Footer";
+import { AmbientMusicPlayer } from "@/components/common/AmbientMusicPlayer";
 import { HomeView } from "@/components/views/HomeView";
 import { ExploreView } from "@/components/views/ExploreView";
 import { LocationDetailView } from "@/components/views/LocationDetailView";
@@ -22,15 +23,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <AmbientMusicPlayer />
       <TopNav />
       <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div
             key={view}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, y: 12, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.99 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             {view === "home" && <HomeView />}
             {view === "explore" && <ExploreView />}
