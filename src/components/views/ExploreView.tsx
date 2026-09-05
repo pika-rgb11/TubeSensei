@@ -157,7 +157,7 @@ export function ExploreView() {
 
       {/* Main content */}
       <section className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-[280px_1fr] gap-6">
+        <div className={cn("grid gap-6", showFilters && "lg:grid-cols-[280px_1fr]")}>
           {/* Filter sidebar */}
           <AnimatePresence>
             {showFilters && (
