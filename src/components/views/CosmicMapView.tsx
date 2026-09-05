@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, X, Star, Moon, ArrowUpRight, Layers, Globe2, Plus, Minus, Crosshair } from "lucide-react";
+import { MapPin, X, Star, Moon, ArrowUpRight, Layers, Globe2, Plus, Minus, Crosshair, Hand } from "lucide-react";
 import { GlassCard } from "@/components/common/GlassCard";
 import { CATEGORY_META } from "@/components/common/CategoryMeta";
 import { useAppStore } from "@/store/app-store";
@@ -25,43 +25,26 @@ const LAYERS: { id: LayerType; label: string; emoji: string; color: string }[] =
 ];
 
 // Realistic continent SVG paths (simplified but recognizable) using a 360×180 viewBox
-// Maps longitude -180..180 to x 0..360, latitude 90..-90 to y 0..180
 const CONTINENTS = [
-  // North America
   { name: "North America", path: "M 35 38 L 50 32 L 70 28 L 95 30 L 115 38 L 130 42 L 150 38 L 168 42 L 175 50 L 170 60 L 158 68 L 145 75 L 130 78 L 110 75 L 88 70 L 70 62 L 55 55 L 45 48 Z" },
-  // Central America strip
   { name: "Central America", path: "M 110 78 L 122 80 L 128 88 L 120 92 L 112 88 Z" },
-  // South America
   { name: "South America", path: "M 130 88 L 150 86 L 158 96 L 162 110 L 158 128 L 148 145 L 138 155 L 128 158 L 122 148 L 120 130 L 124 110 L 128 96 Z" },
-  // Europe
   { name: "Europe", path: "M 180 38 L 198 35 L 215 38 L 225 42 L 232 50 L 228 58 L 215 62 L 200 60 L 188 55 L 182 48 Z" },
-  // Africa
   { name: "Africa", path: "M 195 65 L 215 62 L 235 65 L 245 75 L 250 90 L 252 110 L 245 128 L 232 140 L 218 142 L 205 132 L 198 115 L 193 95 L 192 80 Z" },
-  // Asia (large)
   { name: "Asia", path: "M 230 35 L 260 30 L 290 28 L 320 30 L 345 35 L 358 45 L 350 58 L 328 65 L 308 70 L 290 68 L 270 62 L 248 55 L 232 48 Z" },
-  // Middle East
   { name: "Middle East", path: "M 232 58 L 248 60 L 252 70 L 245 80 L 235 78 L 228 68 Z" },
-  // India
   { name: "India", path: "M 280 68 L 295 70 L 300 82 L 296 95 L 288 100 L 280 92 L 278 78 Z" },
-  // Southeast Asia
   { name: "Southeast Asia", path: "M 310 78 L 325 80 L 332 90 L 328 100 L 320 102 L 312 95 L 308 85 Z" },
-  // Australia
   { name: "Australia", path: "M 305 130 L 325 128 L 345 132 L 355 142 L 350 152 L 332 156 L 312 152 L 302 142 Z" },
-  // Greenland
   { name: "Greenland", path: "M 145 18 L 165 16 L 178 22 L 175 32 L 160 35 L 148 30 Z" },
-  // Antarctica
   { name: "Antarctica", path: "M 30 165 L 80 162 L 140 165 L 200 162 L 260 165 L 320 162 L 350 168 L 340 178 L 200 180 L 60 178 L 25 172 Z" },
-  // UK
   { name: "United Kingdom", path: "M 178 40 L 184 38 L 187 44 L 183 48 L 178 46 Z" },
-  // Japan
   { name: "Japan", path: "M 330 50 L 336 48 L 340 56 L 336 62 L 332 60 L 330 54 Z" },
-  // Madagascar
   { name: "Madagascar", path: "M 256 112 L 262 110 L 265 122 L 260 128 L 254 124 Z" },
-  // New Zealand
   { name: "New Zealand", path: "M 355 152 L 358 150 L 356 158 L 352 156 Z" },
 ];
 
-// Project lat/lng to x/y in container
+// Project lat/lng to x/y in container (percentage)
 function project(lat: number, lng: number) {
   const x = ((lng + 180) / 360) * 100;
   const y = ((90 - lat) / 180) * 100;
@@ -73,41 +56,47 @@ function toSvg(lat: number, lng: number) {
   return { x: lng + 180, y: 90 - lat };
 }
 
+const ZOOM_LEVELS = [1, 2, 3, 5, 8];
+const MIN_ZOOM_INDEX = 0;
+const MAX_ZOOM_INDEX = ZOOM_LEVELS.length - 1;
+
 export function CosmicMapView() {
   const { navigate } = useAppStore();
   const [activeLayer, setActiveLayer] = useState<LayerType>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  // Zoom & pan state
+  const [zoomIndex, setZoomIndex] = useState(0); // index into ZOOM_LEVELS
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 }); // in % of container
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0, panX: 0, panY: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const zoom = ZOOM_LEVELS[zoomIndex];
+
   const markers = useMemo(() => {
     const list: { id: string; lat: number; lng: number; type: "location" | "event"; name: string; meta: any }[] = [];
     if (activeLayer === "all" || activeLayer === "events") {
-      // Place events at sensible real-world coordinates
       const eventCoords: Record<string, { lat: number; lng: number }> = {
-        "evt-perseids": { lat: 41.66, lng: -77.81 }, // Cherry Springs
-        "evt-eclipse": { lat: 28.27, lng: -16.64 }, // Teide
-        "evt-spacex": { lat: 28.57, lng: -80.65 }, // Kennedy
-        "evt-geminids": { lat: -23.66, lng: -67.01 }, // Atacama
-        "evt-aurora": { lat: 67.85, lng: 20.22 }, // Kiruna
-        "evt-iss": { lat: 28.57, lng: -80.65 }, // Kennedy
-        "evt-lunar": { lat: 19.82, lng: -155.47 }, // Mauna Kea
-        "evt-conjunct": { lat: 28.27, lng: -16.64 }, // Teide
-        "evt-fest": { lat: 28.27, lng: -16.64 }, // Teide
+        "evt-perseids": { lat: 41.66, lng: -77.81 },
+        "evt-eclipse": { lat: 28.27, lng: -16.64 },
+        "evt-spacex": { lat: 28.57, lng: -80.65 },
+        "evt-geminids": { lat: -23.66, lng: -67.01 },
+        "evt-aurora": { lat: 67.85, lng: 20.22 },
+        "evt-iss": { lat: 28.57, lng: -80.65 },
+        "evt-lunar": { lat: 19.82, lng: -155.47 },
+        "evt-conjunct": { lat: 28.27, lng: -16.64 },
+        "evt-fest": { lat: 28.27, lng: -16.64 },
       };
       events.forEach((e) => {
         const c = eventCoords[e.id] ?? { lat: 30, lng: 0 };
-        list.push({
-          id: e.id, lat: c.lat, lng: c.lng,
-          type: "event" as const, name: e.name, meta: e,
-        });
+        list.push({ id: e.id, lat: c.lat, lng: c.lng, type: "event" as const, name: e.name, meta: e });
       });
     }
     locations.forEach((l) => {
       if (activeLayer === "all" || l.category === activeLayer) {
-        list.push({
-          id: l.id, lat: l.coordinates.lat, lng: l.coordinates.lng,
-          type: "location" as const, name: l.name, meta: l,
-        });
+        list.push({ id: l.id, lat: l.coordinates.lat, lng: l.coordinates.lng, type: "location" as const, name: l.name, meta: l });
       }
     });
     return list;
@@ -115,6 +104,69 @@ export function CosmicMapView() {
 
   const selected = markers.find((m) => m.id === selectedId);
   const activeLayerMeta = LAYERS.find((l) => l.id === activeLayer);
+
+  // Zoom in/out
+  const zoomIn = useCallback(() => {
+    setZoomIndex((i) => Math.min(MAX_ZOOM_INDEX, i + 1));
+  }, []);
+  const zoomOut = useCallback(() => {
+    setZoomIndex((i) => Math.max(MIN_ZOOM_INDEX, i - 1));
+    // If we go back to 1x, reset pan
+    setZoomIndex((i) => {
+      if (i === 0) {
+        setPanOffset({ x: 0, y: 0 });
+      }
+      return Math.max(MIN_ZOOM_INDEX, i - 1);
+    });
+  }, []);
+
+  const resetView = useCallback(() => {
+    setZoomIndex(0);
+    setPanOffset({ x: 0, y: 0 });
+    setSelectedId(null);
+  }, []);
+
+  // Wheel zoom — zoom around cursor
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = -e.deltaY;
+    if (delta > 0) {
+      setZoomIndex((i) => Math.min(MAX_ZOOM_INDEX, i + 1));
+    } else {
+      setZoomIndex((i) => {
+        const next = Math.max(MIN_ZOOM_INDEX, i - 1);
+        if (next === 0) setPanOffset({ x: 0, y: 0 });
+        return next;
+      });
+    }
+  }, []);
+
+  // Drag to pan (only when zoomed in)
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (zoom === 1) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY, panX: panOffset.x, panY: panOffset.y });
+  }, [zoom, panOffset]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const dx = ((e.clientX - dragStart.x) / rect.width) * 100;
+    const dy = ((e.clientY - dragStart.y) / rect.height) * 100;
+    // Clamp pan so map doesn't wander too far
+    const maxX = (zoom - 1) * 50;
+    const maxY = (zoom - 1) * 50;
+    const newX = Math.max(-maxX, Math.min(maxX, dragStart.panX + dx));
+    const newY = Math.max(-maxY, Math.min(maxY, dragStart.panY + dy));
+    setPanOffset({ x: newX, y: newY });
+  }, [isDragging, dragStart, zoom]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  // Cursor for zoom state
+  const cursorClass = zoom === 1 ? "cursor-default" : isDragging ? "cursor-grabbing" : "cursor-grab";
 
   return (
     <div className="pt-16 pb-12">
@@ -180,13 +232,22 @@ export function CosmicMapView() {
         <GlassCard variant="strong" className="relative overflow-hidden p-0">
           {/* Map container */}
           <div
-            className="relative h-[75vh] min-h-[520px] overflow-hidden"
+            ref={containerRef}
+            className={cn(
+              "relative h-[75vh] min-h-[520px] overflow-hidden select-none",
+              cursorClass
+            )}
             style={{
               background:
                 "radial-gradient(ellipse 80% 60% at 50% 50%, oklch(0.13 0.05 270) 0%, oklch(0.08 0.03 270) 60%, oklch(0.04 0.01 270) 100%)",
             }}
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
-            {/* Nebula gradient layers */}
+            {/* Nebula gradient layers (don't move with pan/zoom) */}
             <div className="absolute inset-0 pointer-events-none">
               <div
                 className="absolute -top-1/4 -left-1/4 w-[60%] h-[60%] rounded-full opacity-40 blur-3xl animate-drift"
@@ -205,246 +266,233 @@ export function CosmicMapView() {
               />
             </div>
 
-            {/* Atmospheric glow around the map edge (vignette) */}
+            {/* Atmospheric vignette (don't move with pan/zoom) */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute inset-0" style={{
                 background: "radial-gradient(ellipse 90% 75% at 50% 50%, transparent 50%, oklch(0.04 0.01 270 / 0.7) 100%)",
               }} />
             </div>
 
-            {/* Star field */}
+            {/* Star field (don't move with pan/zoom — feels parallax-y) */}
             <MapStarField count={200} />
 
-            {/* World map SVG */}
-            <svg
-              className="absolute inset-0 w-full h-full"
-              viewBox="0 0 360 180"
-              preserveAspectRatio="xMidYMid meet"
+            {/* Map content wrapper — this gets transformed for zoom/pan */}
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                scale: zoom,
+                x: `${panOffset.x}%`,
+                y: `${panOffset.y}%`,
+              }}
+              transition={{ type: "spring", stiffness: 200, damping: 30 }}
+              style={{ transformOrigin: "center" }}
             >
-              <defs>
-                {/* Glow filter for continents */}
-                <filter id="continent-glow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="0.8" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                {/* Stronger glow for selected markers */}
-                <filter id="marker-glow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="2" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                {/* Continent gradient */}
-                <linearGradient id="continent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="oklch(0.30 0.10 250)" stopOpacity="0.85" />
-                  <stop offset="50%" stopColor="oklch(0.22 0.08 280)" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="oklch(0.18 0.06 240)" stopOpacity="0.85" />
-                </linearGradient>
-                <linearGradient id="continent-grad-active" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="oklch(0.40 0.12 250)" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="oklch(0.25 0.10 290)" stopOpacity="0.95" />
-                </linearGradient>
-                {/* Ocean pulse gradient */}
-                <radialGradient id="ocean-pulse" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="oklch(0.30 0.10 250 / 0.15)" />
-                  <stop offset="100%" stopColor="transparent" />
-                </radialGradient>
-              </defs>
+              {/* World map SVG */}
+              <svg
+                className="absolute inset-0 w-full h-full"
+                viewBox="0 0 360 180"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <defs>
+                  <filter id="continent-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="0.8" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <filter id="marker-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <linearGradient id="continent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="oklch(0.30 0.10 250)" stopOpacity="0.85" />
+                    <stop offset="50%" stopColor="oklch(0.22 0.08 280)" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="oklch(0.18 0.06 240)" stopOpacity="0.85" />
+                  </linearGradient>
+                  <radialGradient id="ocean-pulse" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="oklch(0.30 0.10 250 / 0.15)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </radialGradient>
+                </defs>
 
-              {/* Subtle ocean pulse */}
-              <ellipse cx="180" cy="90" rx="170" ry="80" fill="url(#ocean-pulse)" opacity="0.5">
-                <animate attributeName="opacity" values="0.3;0.5;0.3" dur="6s" repeatCount="indefinite" />
-              </ellipse>
+                {/* Subtle ocean pulse */}
+                <ellipse cx="180" cy="90" rx="170" ry="80" fill="url(#ocean-pulse)" opacity="0.5">
+                  <animate attributeName="opacity" values="0.3;0.5;0.3" dur="6s" repeatCount="indefinite" />
+                </ellipse>
 
-              {/* Graticule (lat/long grid) - subtle and elegant */}
-              <g stroke="oklch(0.50 0.10 250 / 0.12)" strokeWidth="0.15" fill="none">
-                {/* Latitude lines */}
-                {[-60, -30, 0, 30, 60].map((lat) => {
-                  const y = 90 - lat;
-                  return <line key={`lat${lat}`} x1="0" y1={y} x2="360" y2={y} />;
+                {/* Graticule */}
+                <g stroke="oklch(0.50 0.10 250 / 0.12)" strokeWidth="0.15" fill="none">
+                  {[-60, -30, 0, 30, 60].map((lat) => {
+                    const y = 90 - lat;
+                    return <line key={`lat${lat}`} x1="0" y1={y} x2="360" y2={y} />;
+                  })}
+                  {[-150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150].map((lng) => {
+                    const x = lng + 180;
+                    return <line key={`lng${lng}`} x1={x} y1="0" x2={x} y2="180" />;
+                  })}
+                </g>
+
+                {/* Equator */}
+                <line x1="0" y1="90" x2="360" y2="90" stroke="oklch(0.60 0.15 250 / 0.25)" strokeWidth="0.25" strokeDasharray="2 1.5" />
+
+                {/* Continents */}
+                <g filter="url(#continent-glow)">
+                  {CONTINENTS.map((c) => (
+                    <path
+                      key={c.name}
+                      d={c.path}
+                      fill="url(#continent-grad)"
+                      stroke="oklch(0.55 0.15 250 / 0.6)"
+                      strokeWidth="0.25"
+                      strokeLinejoin="round"
+                    />
+                  ))}
+                </g>
+
+                {/* Topo detail lines */}
+                <g stroke="oklch(0.65 0.12 260 / 0.3)" strokeWidth="0.12" fill="none" strokeLinecap="round">
+                  <path d="M 60 42 L 80 45 L 100 50 M 70 55 L 90 58 L 110 60 M 85 65 L 105 68" />
+                  <path d="M 135 100 L 145 115 L 150 130 M 140 105 L 148 120" />
+                  <path d="M 205 80 L 220 95 L 230 115 M 215 85 L 225 100 L 235 120" />
+                  <path d="M 250 40 L 280 45 L 310 50 M 270 55 L 300 58 L 330 55" />
+                  <path d="M 315 138 L 330 142 L 345 145" />
+                </g>
+
+                {/* Connection arcs */}
+                <g stroke="oklch(0.72 0.18 245 / 0.25)" strokeWidth="0.15" fill="none" strokeDasharray="1 2">
+                  <path d="M 113 114 Q 60 80 25 70" />
+                  <path d="M 113 114 Q 160 130 196 113" />
+                  <path d="M 25 70 Q 100 30 200 22" />
+                  <path d="M 100 61 Q 140 45 178 42" />
+                </g>
+
+                {/* Markers (scaled inversely so they don't grow huge when zoomed) */}
+                {markers.map((m) => {
+                  const svg = toSvg(m.lat, m.lng);
+                  const color =
+                    m.type === "event"
+                      ? "oklch(0.78 0.18 280)"
+                      : CATEGORY_META[(m.meta as any).category as Category]?.color || "oklch(0.72 0.18 245)";
+                  const isSelected = selectedId === m.id;
+                  const isHovered = hoveredId === m.id;
+                  // Inverse scale so markers stay readable size
+                  const inverseScale = 1 / zoom;
+                  return (
+                    <g
+                      key={m.id}
+                      style={{ cursor: "pointer" }}
+                      transform={`translate(${svg.x} ${svg.y}) scale(${inverseScale})`}
+                    >
+                      {/* Outer pulse ring (selected) */}
+                      {isSelected && (
+                        <circle cx="0" cy="0" r="6" fill="none" stroke={color} strokeWidth="0.5" opacity="0.6">
+                          <animate attributeName="r" values="3;8;3" dur="2s" repeatCount="indefinite" />
+                          <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                      )}
+                      {/* Always-on subtle pulse */}
+                      <circle cx="0" cy="0" r="2.5" fill="none" stroke={color} strokeWidth="0.3" opacity="0.3">
+                        <animate
+                          attributeName="r"
+                          values="1.5;3.5;1.5"
+                          dur={`${3 + (m.id.length % 3)}s`}
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="0.4;0;0.4"
+                          dur={`${3 + (m.id.length % 3)}s`}
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      {/* Glow halo */}
+                      <circle
+                        cx="0" cy="0"
+                        r={isSelected || isHovered ? "3" : "2"}
+                        fill={color}
+                        opacity="0.25"
+                        filter="url(#marker-glow)"
+                      />
+                      {/* Main marker dot */}
+                      <circle
+                        cx="0" cy="0"
+                        r={isSelected ? "1.8" : isHovered ? "1.5" : "1.2"}
+                        fill={color}
+                        stroke="white"
+                        strokeWidth={isSelected ? "0.4" : "0.25"}
+                      />
+                      {/* Inner bright dot */}
+                      <circle cx="0" cy="0" r="0.5" fill="white" opacity="0.9" />
+                    </g>
+                  );
                 })}
-                {/* Longitude lines */}
-                {[-150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150].map((lng) => {
-                  const x = lng + 180;
-                  return <line key={`lng${lng}`} x1={x} y1="0" x2={x} y2="180" />;
-                })}
-              </g>
+              </svg>
 
-              {/* Equator highlighted */}
-              <line x1="0" y1="90" x2="360" y2="90" stroke="oklch(0.60 0.15 250 / 0.25)" strokeWidth="0.25" strokeDasharray="2 1.5" />
-
-              {/* Continents with glow */}
-              <g filter="url(#continent-glow)">
-                {CONTINENTS.map((c) => (
-                  <path
-                    key={c.name}
-                    d={c.path}
-                    fill="url(#continent-grad)"
-                    stroke="oklch(0.55 0.15 250 / 0.6)"
-                    strokeWidth="0.25"
-                    strokeLinejoin="round"
-                  />
-                ))}
-              </g>
-
-              {/* Inner topo-style detail lines on continents (decorative) */}
-              <g stroke="oklch(0.65 0.12 260 / 0.3)" strokeWidth="0.12" fill="none" strokeLinecap="round">
-                {/* North America detail */}
-                <path d="M 60 42 L 80 45 L 100 50 M 70 55 L 90 58 L 110 60 M 85 65 L 105 68" />
-                {/* South America detail */}
-                <path d="M 135 100 L 145 115 L 150 130 M 140 105 L 148 120" />
-                {/* Africa detail */}
-                <path d="M 205 80 L 220 95 L 230 115 M 215 85 L 225 100 L 235 120" />
-                {/* Asia detail */}
-                <path d="M 250 40 L 280 45 L 310 50 M 270 55 L 300 58 L 330 55" />
-                {/* Australia detail */}
-                <path d="M 315 138 L 330 142 L 345 145" />
-              </g>
-
-              {/* Connection lines between observatory clusters (decorative arc) */}
-              <g stroke="oklch(0.72 0.18 245 / 0.25)" strokeWidth="0.15" fill="none" strokeDasharray="1 2">
-                {/* Atacama <-> Mauna Kea */}
-                <path d="M 113 114 Q 60 80 25 70" />
-                {/* Atacama <-> NamibRand */}
-                <path d="M 113 114 Q 160 130 196 113" />
-                {/* Mauna Kea <-> Kiruna */}
-                <path d="M 25 70 Q 100 30 200 22" />
-                {/* Kennedy <-> Jodrell Bank */}
-                <path d="M 100 61 Q 140 45 178 42" />
-              </g>
-
-              {/* Markers as SVG for crisp rendering + glow */}
+              {/* HTML overlay markers for hover labels */}
               {markers.map((m) => {
-                const svg = toSvg(m.lat, m.lng);
+                const p = project(m.lat, m.lng);
                 const color =
                   m.type === "event"
                     ? "oklch(0.78 0.18 280)"
                     : CATEGORY_META[(m.meta as any).category as Category]?.color || "oklch(0.72 0.18 245)";
                 const isSelected = selectedId === m.id;
                 const isHovered = hoveredId === m.id;
+                // Marker hit area stays a constant clickable size — we scale the inner content down for zoomed view
                 return (
-                  <g key={m.id} style={{ cursor: "pointer" }}>
-                    {/* Outer pulse ring (only for selected) */}
-                    {isSelected && (
-                      <circle cx={svg.x} cy={svg.y} r="6" fill="none" stroke={color} strokeWidth="0.5" opacity="0.6">
-                        <animate attributeName="r" values="3;8;3" dur="2s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" />
-                      </circle>
+                  <button
+                    key={`btn-${m.id}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedId(isSelected ? null : m.id);
+                    }}
+                    onMouseEnter={(e) => { e.stopPropagation(); setHoveredId(m.id); }}
+                    onMouseLeave={() => setHoveredId(null)}
+                    className="absolute z-10"
+                    style={{
+                      left: `${p.x}%`,
+                      top: `${p.y}%`,
+                      transform: "translate(-50%, -50%)",
+                      width: `${Math.max(16, 24 / zoom)}px`,
+                      height: `${Math.max(16, 24 / zoom)}px`,
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                    }}
+                    aria-label={m.name}
+                  >
+                    {/* Hover/selected label tooltip */}
+                    {(isHovered || isSelected) && !isSelected && (
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 -top-7 whitespace-nowrap px-2 py-0.5 rounded-md glass-strong text-[10px] font-medium pointer-events-none"
+                        style={{ color }}
+                      >
+                        {m.name}
+                      </div>
                     )}
-                    {/* Always-on subtle pulse for all markers */}
-                    <circle cx={svg.x} cy={svg.y} r="2.5" fill="none" stroke={color} strokeWidth="0.3" opacity="0.3">
-                      <animate
-                        attributeName="r"
-                        values="1.5;3.5;1.5"
-                        dur={`${3 + (m.id.length % 3)}s`}
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="0.4;0;0.4"
-                        dur={`${3 + (m.id.length % 3)}s`}
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    {/* Glow halo */}
-                    <circle
-                      cx={svg.x}
-                      cy={svg.y}
-                      r={isSelected || isHovered ? "3" : "2"}
-                      fill={color}
-                      opacity="0.25"
-                      filter="url(#marker-glow)"
-                    />
-                    {/* Main marker dot */}
-                    <circle
-                      cx={svg.x}
-                      cy={svg.y}
-                      r={isSelected ? "1.8" : isHovered ? "1.5" : "1.2"}
-                      fill={color}
-                      stroke="white"
-                      strokeWidth={isSelected ? "0.4" : "0.25"}
-                      style={{ transition: "r 0.2s" }}
-                    />
-                    {/* Inner bright dot */}
-                    <circle cx={svg.x} cy={svg.y} r="0.5" fill="white" opacity="0.9" />
-                  </g>
+                  </button>
                 );
               })}
-
-              {/* Hover tooltip line from marker to label */}
-              {markers
-                .filter((m) => hoveredId === m.id && selectedId !== m.id)
-                .map((m) => {
-                  const svg = toSvg(m.lat, m.lng);
-                  return (
-                    <g key={`tip-${m.id}`} pointerEvents="none">
-                      <line
-                        x1={svg.x}
-                        y1={svg.y}
-                        x2={svg.x}
-                        y2={svg.y - 5}
-                        stroke="oklch(0.80 0.18 245 / 0.5)"
-                        strokeWidth="0.2"
-                      />
-                    </g>
-                  );
-                })}
-            </svg>
-
-            {/* HTML overlay markers for hover labels (positioned on top of SVG) */}
-            {markers.map((m) => {
-              const p = project(m.lat, m.lng);
-              const color =
-                m.type === "event"
-                  ? "oklch(0.78 0.18 280)"
-                  : CATEGORY_META[(m.meta as any).category as Category]?.color || "oklch(0.72 0.18 245)";
-              const isSelected = selectedId === m.id;
-              const isHovered = hoveredId === m.id;
-              return (
-                <button
-                  key={`btn-${m.id}`}
-                  onClick={() => setSelectedId(isSelected ? null : m.id)}
-                  onMouseEnter={() => setHoveredId(m.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                  className="absolute z-10"
-                  style={{
-                    left: `${p.x}%`,
-                    top: `${p.y}%`,
-                    transform: "translate(-50%, -50%)",
-                    width: "24px",
-                    height: "24px",
-                  }}
-                  aria-label={m.name}
-                >
-                  {/* Hover/selected label tooltip */}
-                  {(isHovered || isSelected) && !isSelected && (
-                    <div
-                      className="absolute left-1/2 -translate-x-1/2 -top-7 whitespace-nowrap px-2 py-0.5 rounded-md glass-strong text-[10px] font-medium pointer-events-none"
-                      style={{ color }}
-                    >
-                      {m.name}
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+            </motion.div>
 
             {/* Top-left info HUD */}
-            <div className="absolute top-4 left-4 px-3 py-2.5 rounded-xl glass-strong text-xs">
+            <div className="absolute top-4 left-4 px-3 py-2.5 rounded-xl glass-strong text-xs z-20 pointer-events-none">
               <div className="text-muted-foreground text-[9px] uppercase tracking-wider mb-1">Active Layer</div>
               <div className="font-semibold flex items-center gap-1.5">
                 <span className="text-sm">{activeLayerMeta?.emoji}</span>
                 {activeLayerMeta?.label}
               </div>
-              <div className="text-[10px] text-muted-foreground mt-1">{markers.length} markers · 360° view</div>
+              <div className="text-[10px] text-muted-foreground mt-1">
+                {markers.length} markers · {zoom}x zoom
+                {zoom > 1 && <span className="ml-1 text-primary">· drag to pan</span>}
+              </div>
             </div>
 
             {/* Bottom-right legend */}
-            <div className="absolute bottom-4 right-4 px-3.5 py-3 rounded-xl glass-strong text-xs space-y-1.5">
+            <div className="absolute bottom-4 right-4 px-3.5 py-3 rounded-xl glass-strong text-xs space-y-1.5 z-20 pointer-events-none">
               <div className="text-muted-foreground text-[9px] uppercase tracking-wider mb-2 font-semibold">Legend</div>
               {[
                 { color: "oklch(0.72 0.18 245)", label: "Stargazing" },
@@ -470,7 +518,7 @@ export function CosmicMapView() {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 20, scale: 0.95 }}
                   transition={{ type: "spring", damping: 24 }}
-                  className="absolute top-4 right-4 bottom-16 w-72 glass-strong rounded-2xl p-4 overflow-y-auto custom-scroll"
+                  className="absolute top-4 right-4 bottom-16 w-72 glass-strong rounded-2xl p-4 overflow-y-auto custom-scroll z-30"
                 >
                   {selected.type === "location" ? (
                     <SelectedLocationCard
@@ -489,31 +537,73 @@ export function CosmicMapView() {
               )}
             </AnimatePresence>
 
-            {/* Bottom controls (zoom) */}
-            <div className="absolute bottom-4 left-4 flex flex-col gap-1.5">
-              <button className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center hover:bg-white/10 transition-colors group">
+            {/* Bottom controls (zoom — working!) */}
+            <div className="absolute bottom-4 left-4 flex flex-col gap-1.5 z-30">
+              <button
+                onClick={zoomIn}
+                disabled={zoomIndex >= MAX_ZOOM_INDEX}
+                className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center hover:bg-white/10 transition-colors group disabled:opacity-40 disabled:cursor-not-allowed hover:glow-primary"
+                aria-label="Zoom in"
+              >
                 <Plus className="h-4 w-4 group-hover:text-primary transition-colors" />
               </button>
-              <button className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center hover:bg-white/5 transition-colors group">
+              {/* Zoom level indicator */}
+              <div className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center text-[10px] font-bold text-primary tabular-nums">
+                {zoom}x
+              </div>
+              <button
+                onClick={zoomOut}
+                disabled={zoomIndex <= MIN_ZOOM_INDEX}
+                className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center hover:bg-white/5 transition-colors group disabled:opacity-40 disabled:cursor-not-allowed hover:glow-primary"
+                aria-label="Zoom out"
+              >
                 <Minus className="h-4 w-4 group-hover:text-primary transition-colors" />
               </button>
               <button
-                onClick={() => { setSelectedId(null); setActiveLayer("all"); }}
+                onClick={resetView}
                 className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center hover:bg-white/5 transition-colors group"
                 aria-label="Reset view"
+                title="Reset view"
               >
                 <Crosshair className="h-4 w-4 group-hover:text-primary transition-colors" />
               </button>
-              <button className="h-10 w-10 rounded-xl glass-strong flex items-center justify-center hover:bg-white/5 transition-colors group">
-                <Layers className="h-4 w-4 group-hover:text-primary transition-colors" />
-              </button>
             </div>
 
-            {/* Bottom center: projection info */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg glass-strong text-[10px] text-muted-foreground flex items-center gap-2">
+            {/* Bottom center: instructions / projection info */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg glass-strong text-[10px] text-muted-foreground flex items-center gap-2 z-20 pointer-events-none">
               <Globe2 className="h-3 w-3 text-primary" />
-              Equirectangular projection · Cosmic Map v3.0
+              {zoom === 1 ? (
+                <span>Scroll to zoom · Cosmic Map v3.1</span>
+              ) : (
+                <span className="text-primary">Drag to pan · scroll to zoom · reset to exit</span>
+              )}
             </div>
+
+            {/* Zoom indicator bar (only visible when zoomed) */}
+            <AnimatePresence>
+              {zoom > 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg glass-strong text-[10px] flex items-center gap-2 z-20 pointer-events-none"
+                >
+                  <Hand className="h-3 w-3 text-primary" />
+                  <span>Drag to explore</span>
+                  <div className="flex gap-1 ml-2">
+                    {ZOOM_LEVELS.map((z, i) => (
+                      <div
+                        key={z}
+                        className={cn(
+                          "h-1 w-4 rounded-full transition-colors",
+                          i === zoomIndex ? "bg-primary" : "bg-white/15"
+                        )}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </GlassCard>
       </section>
@@ -597,23 +687,6 @@ function SelectedLocationCard({
         )}
         <div className="absolute inset-0 nebula-overlay opacity-50" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        {/* Mini starfield on the preview */}
-        <div className="absolute inset-0">
-          {Array.from({ length: 15 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-white animate-twinkle"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 1.5 + 0.3}px`,
-                height: `${Math.random() * 1.5 + 0.3}px`,
-                opacity: 0.6,
-                animationDelay: `${Math.random() * 4}s`,
-              }}
-            />
-          ))}
-        </div>
         {/* Mini planet visual */}
         <div
           className="absolute top-2 right-2 h-8 w-8 rounded-full animate-float"
