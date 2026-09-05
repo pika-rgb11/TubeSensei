@@ -1,0 +1,24 @@
+{
+  "events": {
+    "evt-perseids": "/images/events/evt-perseids.jpg",
+    "evt-eclipse": "/images/events/evt-eclipse.jpg",
+    "evt-spacex": "/images/events/evt-spacex.jpg",
+    "evt-aurora": "/images/events/evt-aurora.jpg",
+    "evt-lunar": "/images/events/evt-lunar.jpg",
+    "evt-conjunct": "/images/events/evt-conjunct.jpg",
+    "evt-fest": "/images/events/evt-fest.jpg",
+    "evt-iss": "/images/events/evt-iss.jpg",
+    "evt-geminids": "/images/events/evt-geminids.jpg"
+  },
+  "cosmic": {
+    "andromeda": "/images/cosmic/andromeda.jpg",
+    "orion-nebula": "/images/cosmic/orion-nebula.jpg",
+    "sagittarius-a": "/images/cosmic/sagittarius-a.jpg",
+    "proxima-b": "/images/cosmic/proxima-b.png",
+    "sirius": "/images/cosmic/sirius.jpg",
+    "orion-const": "/images/cosmic/orion-const.jpg",
+    "jwst": "/images/cosmic/jwst.jpg",
+    "artemis": "/images/cosmic/artemis.jpg",
+    "armstrong": "/images/cosmic/armstrong.jpg"
+  }
+}

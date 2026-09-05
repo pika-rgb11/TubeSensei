@@ -238,8 +238,19 @@ function CosmicObjectCard({ object, index, onClick }: { object: CosmicObject; in
       className="group text-left rounded-2xl overflow-hidden glass-card hover:glow-primary transition-all"
     >
       <div className="relative h-44 overflow-hidden" style={{ background: object.gradient }}>
-        <div className="absolute inset-0 nebula-overlay" />
+        {/* Real photo */}
+        {object.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={object.image}
+            alt={object.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-50" />
         <StarField count={25} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full glass-strong text-xs font-medium uppercase tracking-wider">
           {object.category}
         </div>

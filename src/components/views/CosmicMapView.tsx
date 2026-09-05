@@ -591,8 +591,12 @@ function SelectedLocationCard({
         className="h-28 mt-3 rounded-lg overflow-hidden relative"
         style={{ background: location.imageGradient }}
       >
-        <div className="absolute inset-0 nebula-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        {location.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={location.image} alt={location.name} className="absolute inset-0 w-full h-full object-cover" />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         {/* Mini starfield on the preview */}
         <div className="absolute inset-0">
           {Array.from({ length: 15 }).map((_, i) => (
@@ -667,8 +671,12 @@ function SelectedEventCard({
         {event.bestLocation}
       </div>
       <div className="h-28 mt-3 rounded-lg overflow-hidden relative" style={{ background: event.imageGradient }}>
-        <div className="absolute inset-0 nebula-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        {event.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={event.image} alt={event.name} className="absolute inset-0 w-full h-full object-cover" />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         {/* Animated comet trail */}
         <div className="absolute top-1/2 left-0 w-32 h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent animate-shooting-star opacity-70" />
       </div>

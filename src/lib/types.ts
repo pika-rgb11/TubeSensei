@@ -32,7 +32,8 @@ export interface Location {
   openingHours: string;
   ticketInfo: string;
   coordinates: { lat: number; lng: number };
-  imageGradient: string; // CSS gradient for hero
+  image: string; // URL to real photo
+  imageGradient: string; // CSS gradient for hero (fallback)
   galleryGradients: string[];
   nearbyAttractions: string[];
   experiences: Experience[];
@@ -89,6 +90,7 @@ export interface SpaceEvent {
   details: string;
   peakTime?: string;
   duration?: string;
+  image: string; // URL to real photo
   imageGradient: string;
 }
 
@@ -152,6 +154,7 @@ export interface CosmicObject {
   id: string;
   name: string;
   category: "galaxy" | "nebula" | "black-hole" | "exoplanet" | "star" | "constellation" | "telescope" | "mission" | "astronaut";
+  image: string; // URL to real photo
   gradient: string;
   description: string;
   interestingFacts: string[];

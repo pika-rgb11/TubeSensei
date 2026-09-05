@@ -288,6 +288,7 @@ export const planets: Planet[] = [
 export const cosmicObjects: CosmicObject[] = [
   {
     id: "andromeda",
+    image: "/images/cosmic/andromeda.jpg",
     name: "Andromeda Galaxy (M31)",
     category: "galaxy",
     gradient: grad("oklch(0.55 0.16 250)", "oklch(0.30 0.12 260)", "oklch(0.10 0.04 270)"),
@@ -309,6 +310,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "orion-nebula",
+    image: "/images/cosmic/orion-nebula.jpg",
     name: "Orion Nebula (M42)",
     category: "nebula",
     gradient: grad("oklch(0.70 0.20 300)", "oklch(0.40 0.18 280)", "oklch(0.10 0.06 270)"),
@@ -330,6 +332,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "sagittarius-a",
+    image: "/images/cosmic/sagittarius-a.jpg",
     name: "Sagittarius A*",
     category: "black-hole",
     gradient: grad("oklch(0.10 0.10 270)", "oklch(0.05 0.05 270)", "oklch(0.02 0.02 270)"),
@@ -350,6 +353,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "proxima-b",
+    image: "/images/cosmic/proxima-b.png",
     name: "Proxima Centauri b",
     category: "exoplanet",
     gradient: grad("oklch(0.65 0.16 30)", "oklch(0.35 0.12 25)", "oklch(0.10 0.04 20)"),
@@ -370,6 +374,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "sirius",
+    image: "/images/cosmic/sirius.jpg",
     name: "Sirius (Dog Star)",
     category: "star",
     gradient: grad("oklch(0.90 0.10 230)", "oklch(0.65 0.08 240)", "oklch(0.25 0.04 250)"),
@@ -390,6 +395,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "orion-const",
+    image: "/images/cosmic/orion-const.jpg",
     name: "Orion Constellation",
     category: "constellation",
     gradient: grad("oklch(0.65 0.16 240)", "oklch(0.30 0.10 280)", "oklch(0.05 0.02 270)"),
@@ -411,6 +417,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "jwst",
+    image: "/images/cosmic/jwst.jpg",
     name: "James Webb Space Telescope",
     category: "telescope",
     gradient: grad("oklch(0.55 0.16 250)", "oklch(0.25 0.08 260)", "oklch(0.05 0.02 270)"),
@@ -431,6 +438,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "artemis",
+    image: "/images/cosmic/artemis.jpg",
     name: "Artemis Program",
     category: "mission",
     gradient: grad("oklch(0.65 0.16 250)", "oklch(0.35 0.12 30)", "oklch(0.05 0.02 270)"),
@@ -452,6 +460,7 @@ export const cosmicObjects: CosmicObject[] = [
   },
   {
     id: "armstrong",
+    image: "/images/cosmic/armstrong.jpg",
     name: "Neil Armstrong",
     category: "astronaut",
     gradient: grad("oklch(0.50 0.06 250)", "oklch(0.25 0.04 260)", "oklch(0.05 0.02 270)"),

@@ -63,7 +63,12 @@ export function BookingView() {
                 <p className="text-muted-foreground mb-6">Your cosmic adventure awaits at {location.name}.</p>
                 <GlassCard className="p-4 text-left mb-6">
                   <div className="flex items-start gap-3">
-                    <div className="h-14 w-14 rounded-lg shrink-0" style={{ background: location.imageGradient }} />
+                    <div className="h-14 w-14 rounded-lg shrink-0 relative overflow-hidden" style={{ background: location.imageGradient }}>
+                      {location.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={location.image} alt={location.name} className="absolute inset-0 w-full h-full object-cover" />
+                      )}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold">{selectedExp ? location.experiences.find((e) => e.id === selectedExp)?.title : "Experience"}</div>
                       <div className="text-sm text-muted-foreground mt-0.5">{location.name} · {location.city}, {location.country}</div>
@@ -226,9 +231,14 @@ export function BookingView() {
       {/* Hero */}
       <section className="relative h-64 overflow-hidden">
         <div className="absolute inset-0" style={{ background: location.imageGradient }} />
-        <div className="absolute inset-0 nebula-overlay" />
+        {/* Real photo */}
+        {location.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={location.image} alt={location.name} className="absolute inset-0 w-full h-full object-cover" />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-40" />
         <StarField count={60} />
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="container mx-auto px-6 relative h-full flex flex-col justify-end pb-6">
           <button onClick={goBack} className="flex items-center gap-1.5 text-sm mb-2 hover:text-primary">
             <ChevronLeft className="h-4 w-4" /> Back to {location.name}

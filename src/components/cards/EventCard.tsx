@@ -62,8 +62,18 @@ END:VEVENT`;
         className="relative h-40 overflow-hidden"
         style={{ background: event.imageGradient }}
       >
-        <div className="absolute inset-0 nebula-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        {/* Real photo */}
+        {event.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={event.image}
+            alt={event.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
         {/* Floating celestial body */}
         <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-full opacity-60 animate-float"

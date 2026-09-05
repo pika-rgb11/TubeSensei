@@ -83,8 +83,18 @@ export function LocationCard({ location, index = 0, variant = "default" }: Locat
         )}
         style={{ background: location.imageGradient }}
       >
-        <div className="absolute inset-0 nebula-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        {/* Real photo with overlay */}
+        {location.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={location.image}
+            alt={location.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
         {/* Floating planet decoration */}
         <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-70 animate-float"

@@ -63,8 +63,17 @@ export function LocationDetailView() {
           className="absolute inset-0"
           style={{ background: location.imageGradient }}
         />
-        <div className="absolute inset-0 nebula-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        {/* Real photo */}
+        {location.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={location.image}
+            alt={location.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 nebula-overlay opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         <StarField count={100} withShootingStars className="opacity-80" />
 
         {/* Floating planet */}

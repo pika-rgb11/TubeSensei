@@ -15,6 +15,7 @@ const dateFromNow = (days: number, hour = 21) => {
 export const events: SpaceEvent[] = [
   {
     id: "evt-perseids",
+    image: "/images/events/evt-perseids.jpg",
     type: "meteor-shower",
     name: "Perseid Meteor Shower Peak",
     date: dateFromNow(14, 22),
@@ -32,6 +33,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-eclipse",
+    image: "/images/events/evt-eclipse.jpg",
     type: "solar-eclipse",
     name: "Total Solar Eclipse",
     date: dateFromNow(48, 18),
@@ -49,6 +51,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-spacex",
+    image: "/images/events/evt-spacex.jpg",
     type: "rocket-launch",
     name: "Falcon Heavy — Europa Clipper",
     date: dateFromNow(7, 13),
@@ -66,6 +69,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-geminids",
+    image: "/images/events/evt-geminids.jpg",
     type: "meteor-shower",
     name: "Geminid Meteor Shower",
     date: dateFromNow(95, 2),
@@ -83,6 +87,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-aurora",
+    image: "/images/events/evt-aurora.jpg",
     type: "aurora",
     name: "Aurora Borealis Window",
     date: dateFromNow(3, 22),
@@ -100,6 +105,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-iss",
+    image: "/images/events/evt-iss.jpg",
     type: "iss-visibility",
     name: "ISS — Bright Evening Pass",
     date: dateFromNow(1, 19),
@@ -117,6 +123,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-lunar",
+    image: "/images/events/evt-lunar.jpg",
     type: "lunar-eclipse",
     name: "Total Lunar Eclipse (Blood Moon)",
     date: dateFromNow(32, 3),
@@ -134,6 +141,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-conjunct",
+    image: "/images/events/evt-conjunct.jpg",
     type: "conjunction",
     name: "Jupiter–Venus Conjunction",
     date: dateFromNow(20, 18),
@@ -151,6 +159,7 @@ export const events: SpaceEvent[] = [
   },
   {
     id: "evt-fest",
+    image: "/images/events/evt-fest.jpg",
     type: "astronomy-festival",
     name: "Cosmos Fest 2026",
     date: dateFromNow(56, 10),

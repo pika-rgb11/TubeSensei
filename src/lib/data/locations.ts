@@ -87,6 +87,7 @@ export const experiences: Experience[] = [
 export const locations: Location[] = [
   {
     id: "atacama",
+    image: "/images/locations/atacama.jpg",
     name: "Atacama Desert",
     country: "Chile",
     city: "Antofagasta",
@@ -126,6 +127,7 @@ export const locations: Location[] = [
   },
   {
     id: "mauna-kea",
+    image: "/images/locations/mauna-kea.png",
     name: "Mauna Kea Summit",
     country: "USA",
     city: "Hawaii",
@@ -165,6 +167,7 @@ export const locations: Location[] = [
   },
   {
     id: "jodrell-bank",
+    image: "/images/locations/jodrell-bank.jpg",
     name: "Jodrell Bank Observatory",
     country: "United Kingdom",
     city: "Cheshire",
@@ -202,6 +205,7 @@ export const locations: Location[] = [
   },
   {
     id: "cherry-springs",
+    image: "/images/locations/cherry-springs.jpg",
     name: "Cherry Springs State Park",
     country: "USA",
     city: "Pennsylvania",
@@ -240,6 +244,7 @@ export const locations: Location[] = [
   },
   {
     id: "tteide",
+    image: "/images/locations/tteide.png",
     name: "Teide National Park",
     country: "Spain",
     city: "Tenerife",
@@ -277,6 +282,7 @@ export const locations: Location[] = [
   },
   {
     id: "kagura",
+    image: "/images/locations/kagura.jpg",
     name: "Kagura Backcountry",
     country: "Japan",
     city: "Niigata",
@@ -313,6 +319,7 @@ export const locations: Location[] = [
   },
   {
     id: "herschel",
+    image: "/images/locations/herschel.jpg",
     name: "Herschel Space Museum",
     country: "United Kingdom",
     city: "Bath",
@@ -347,6 +354,7 @@ export const locations: Location[] = [
   },
   {
     id: "kennedy",
+    image: "/images/locations/kennedy.jpg",
     name: "Kennedy Space Center",
     country: "USA",
     city: "Florida",
@@ -385,6 +393,7 @@ export const locations: Location[] = [
   },
   {
     id: "hayden",
+    image: "/images/locations/hayden.jpg",
     name: "Hayden Planetarium",
     country: "USA",
     city: "New York",
@@ -419,6 +428,7 @@ export const locations: Location[] = [
   },
   {
     id: "namib",
+    image: "/images/locations/namib.jpg",
     name: "NamibRand Reserve",
     country: "Namibia",
     city: "Hardap",
@@ -457,6 +467,7 @@ export const locations: Location[] = [
   },
   {
     id: "alma",
+    image: "/images/locations/alma.jpg",
     name: "ALMA Observatory",
     country: "Chile",
     city: "Atacama",
@@ -493,6 +504,7 @@ export const locations: Location[] = [
   },
   {
     id: "kiruna",
+    image: "/images/locations/kiruna.jpg",
     name: "Kiruna Aurora Village",
     country: "Sweden",
     city: "Kiruna",
@@ -531,6 +543,7 @@ export const locations: Location[] = [
   },
   {
     id: "hakos",
+    image: "/images/locations/hakos.jpg",
     name: "Hakos Guestfarm",
     country: "Namibia",
     city: "Khomas Highlands",
@@ -566,6 +579,7 @@ export const locations: Location[] = [
   },
   {
     id: "kopernik",
+    image: "/images/locations/kopernik.jpg",
     name: "Kopernik Observatory",
     country: "USA",
     city: "Vestal, NY",
