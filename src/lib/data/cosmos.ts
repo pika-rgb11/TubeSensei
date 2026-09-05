@@ -17,6 +17,7 @@ export const planets: Planet[] = [
     gravity: "274 m/s²",
     color: "oklch(0.85 0.20 60)",
     gradient: grad("oklch(0.90 0.22 50)", "oklch(0.70 0.20 30)", "oklch(0.40 0.10 20)"),
+    texture: { kind: "star", baseColor: "oklch(0.85 0.22 50)", secondaryColor: "oklch(0.65 0.20 30)", accentColor: "oklch(0.95 0.18 70)" },
     description:
       "The Sun is the star at the center of our Solar System. It is a nearly perfect ball of hot plasma, heated to incandescence by nuclear fusion reactions in its core, radiating energy from its surface mainly as visible light, ultraviolet, and infrared radiation. It is by far the most important source of energy for life on Earth.",
     interestingFacts: [
@@ -47,6 +48,7 @@ export const planets: Planet[] = [
     gravity: "3.7 m/s²",
     color: "oklch(0.70 0.04 60)",
     gradient: grad("oklch(0.70 0.06 60)", "oklch(0.45 0.03 50)", "oklch(0.20 0.02 40)"),
+    texture: { kind: "rocky-cratered", baseColor: "oklch(0.55 0.04 50)", secondaryColor: "oklch(0.40 0.03 40)", accentColor: "oklch(0.70 0.05 60)" },
     description:
       "The smallest planet in the Solar System and the closest to the Sun. Mercury's surface resembles that of the Moon, displaying extensive cratering and ancient lava plains. It has no significant atmosphere to retain heat, leading to dramatic temperature swings between day and night.",
     interestingFacts: [
@@ -77,6 +79,7 @@ export const planets: Planet[] = [
     gravity: "8.87 m/s²",
     color: "oklch(0.78 0.14 70)",
     gradient: grad("oklch(0.82 0.16 70)", "oklch(0.55 0.12 60)", "oklch(0.25 0.05 50)"),
+    texture: { kind: "clouded-venus", baseColor: "oklch(0.78 0.14 70)", secondaryColor: "oklch(0.65 0.10 55)", accentColor: "oklch(0.85 0.18 80)", atmosphereColor: "oklch(0.85 0.14 70 / 0.6)" },
     description:
       "Often called Earth's twin due to similar size and mass, Venus is actually one of the most hostile places in the Solar System. A runaway greenhouse effect keeps its surface hot enough to melt lead, and its atmosphere crushes down at pressures 92 times that of Earth's sea level.",
     interestingFacts: [
@@ -107,6 +110,7 @@ export const planets: Planet[] = [
     gravity: "9.81 m/s²",
     color: "oklch(0.70 0.18 220)",
     gradient: grad("oklch(0.75 0.18 220)", "oklch(0.45 0.12 200)", "oklch(0.20 0.05 180)"),
+    texture: { kind: "earth-like", baseColor: "oklch(0.55 0.16 220)", secondaryColor: "oklch(0.45 0.18 145)", accentColor: "oklch(0.95 0.04 250)", atmosphereColor: "oklch(0.65 0.18 230 / 0.5)" },
     description:
       "The only known planet to harbor life. Earth's atmosphere, magnetic field, position in the habitable zone, and plate tectonics combine to create the unique conditions for liquid water on its surface — and ultimately, the rich biodiversity we share the planet with.",
     interestingFacts: [
@@ -137,6 +141,7 @@ export const planets: Planet[] = [
     gravity: "3.71 m/s²",
     color: "oklch(0.65 0.18 30)",
     gradient: grad("oklch(0.70 0.18 30)", "oklch(0.45 0.14 25)", "oklch(0.18 0.05 20)"),
+    texture: { kind: "mars-like", baseColor: "oklch(0.55 0.16 30)", secondaryColor: "oklch(0.40 0.10 25)", accentColor: "oklch(0.90 0.04 50)" },
     description:
       "The Red Planet, named for its rust-colored iron oxide surface. Mars is the most Earth-like planet in the Solar System and the primary target for human exploration. It has polar ice caps, ancient riverbeds, the largest volcano (Olympus Mons), and the longest canyon (Valles Marineris) in the Solar System.",
     interestingFacts: [
@@ -167,6 +172,7 @@ export const planets: Planet[] = [
     gravity: "24.79 m/s²",
     color: "oklch(0.75 0.14 70)",
     gradient: grad("oklch(0.80 0.16 50)", "oklch(0.55 0.12 30)", "oklch(0.25 0.06 20)"),
+    texture: { kind: "gas-banded-jupiter", baseColor: "oklch(0.75 0.14 60)", secondaryColor: "oklch(0.55 0.12 30)", accentColor: "oklch(0.70 0.20 20)" },
     description:
       "The largest planet in our Solar System — more than twice the mass of all other planets combined. Jupiter is a gas giant with no solid surface, characterized by its distinctive banded clouds and the Great Red Spot, a storm larger than Earth that has raged for at least 400 years.",
     interestingFacts: [
@@ -197,6 +203,7 @@ export const planets: Planet[] = [
     gravity: "10.44 m/s²",
     color: "oklch(0.80 0.12 70)",
     gradient: grad("oklch(0.82 0.14 70)", "oklch(0.58 0.10 60)", "oklch(0.25 0.05 50)"),
+    texture: { kind: "gas-banded-saturn", baseColor: "oklch(0.80 0.12 70)", secondaryColor: "oklch(0.62 0.08 55)", accentColor: "oklch(0.88 0.10 80)", ringColor: "oklch(0.72 0.10 60 / 0.7)", hasRing: true },
     description:
       "Famous for its spectacular ring system, Saturn is the second-largest planet and the least dense — it would float in water. Its rings span up to 282,000 km in diameter but are only 10 meters thick. Saturn's moon Titan is the only moon with a substantial atmosphere.",
     interestingFacts: [
@@ -227,6 +234,7 @@ export const planets: Planet[] = [
     gravity: "8.69 m/s²",
     color: "oklch(0.78 0.14 200)",
     gradient: grad("oklch(0.82 0.14 200)", "oklch(0.55 0.10 190)", "oklch(0.25 0.05 180)"),
+    texture: { kind: "ice-giant-uranus", baseColor: "oklch(0.78 0.14 200)", secondaryColor: "oklch(0.60 0.08 190)", accentColor: "oklch(0.85 0.10 210)", atmosphereColor: "oklch(0.78 0.14 200 / 0.4)" },
     description:
       "The coldest planet in the Solar System and the only one named after a Greek (rather than Roman) deity. Uranus rotates on its side — likely the result of an ancient collision — so its poles take turns facing the Sun for 42 years at a time.",
     interestingFacts: [
@@ -257,6 +265,7 @@ export const planets: Planet[] = [
     gravity: "11.15 m/s²",
     color: "oklch(0.55 0.16 250)",
     gradient: grad("oklch(0.60 0.18 250)", "oklch(0.40 0.14 260)", "oklch(0.18 0.06 270)"),
+    texture: { kind: "ice-giant-neptune", baseColor: "oklch(0.55 0.16 250)", secondaryColor: "oklch(0.40 0.14 260)", accentColor: "oklch(0.65 0.18 240)", atmosphereColor: "oklch(0.55 0.16 250 / 0.4)" },
     description:
       "The most distant planet from the Sun, Neptune was the first planet discovered through mathematical prediction rather than observation. It has the strongest winds in the Solar System — up to 2,100 km/h — and its deep blue color comes from methane in its atmosphere.",
     interestingFacts: [

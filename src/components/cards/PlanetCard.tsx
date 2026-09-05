@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Planet } from "@/lib/types";
 import { useAppStore } from "@/store/app-store";
+import { PlanetVisual } from "@/components/common/PlanetVisual";
 
 interface PlanetCardProps {
   planet: Planet;
@@ -25,27 +26,36 @@ export function PlanetCard({ planet, index = 0, detailed = false }: PlanetCardPr
     >
       {/* Planet visualization */}
       <div
-        className="relative h-48 flex items-center justify-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, oklch(0.13 0.03 270) 0%, oklch(0.08 0.02 270) 100%)" }}
+        className="relative h-56 flex items-center justify-center overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% 50%, oklch(0.13 0.04 270) 0%, oklch(0.07 0.02 270) 70%, oklch(0.04 0.01 270) 100%)",
+        }}
       >
-        <StarFieldMini />
+        {/* Subtle nebula glow behind planet */}
         <div
-          className="h-24 w-24 rounded-full relative animate-float"
-          style={{
-            background: planet.gradient,
-            boxShadow: `0 0 40px ${planet.color}, inset -10px -10px 30px rgba(0,0,0,0.4)`,
-          }}
-        >
-          <div className="absolute inset-0 rounded-full opacity-30"
-            style={{
-              background: "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 50%)",
-            }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full opacity-30 blur-3xl pointer-events-none"
+          style={{ background: `radial-gradient(circle, ${planet.texture.baseColor}, transparent 70%)` }}
+        />
+
+        {/* The realistic planet */}
+        <div className="relative animate-float">
+          <PlanetVisual texture={planet.texture} size={160} />
+        </div>
+
+        {/* Orbital ring decoration */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div
+            className="rounded-full border border-white/[0.04] animate-spin-slow"
+            style={{ width: 220, height: 220 }}
           />
         </div>
 
-        {/* Orbital ring */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-40 h-40 rounded-full border border-white/5 animate-spin-slow" />
+        {/* Hover overlay hint */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <div className="px-2.5 py-1 rounded-full glass-strong text-[10px] text-muted-foreground">
+            Click to explore →
+          </div>
         </div>
       </div>
 
@@ -73,31 +83,5 @@ export function PlanetCard({ planet, index = 0, detailed = false }: PlanetCardPr
         )}
       </div>
     </motion.div>
-  );
-}
-
-function StarFieldMini() {
-  return (
-    <div className="absolute inset-0 pointer-events-none">
-      {Array.from({ length: 25 }).map((_, i) => {
-        const top = Math.random() * 100;
-        const left = Math.random() * 100;
-        const size = Math.random() * 1.5 + 0.3;
-        return (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white animate-twinkle"
-            style={{
-              top: `${top}%`,
-              left: `${left}%`,
-              width: `${size}px`,
-              height: `${size}px`,
-              opacity: 0.5,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        );
-      })}
-    </div>
   );
 }

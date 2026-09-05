@@ -107,6 +107,27 @@ export type PlanetId =
   | "sun" | "mercury" | "venus" | "earth" | "mars"
   | "jupiter" | "saturn" | "uranus" | "neptune";
 
+export type PlanetTextureKind =
+  | "star"
+  | "rocky-cratered"
+  | "clouded-venus"
+  | "earth-like"
+  | "mars-like"
+  | "gas-banded-jupiter"
+  | "gas-banded-saturn"
+  | "ice-giant-uranus"
+  | "ice-giant-neptune";
+
+export interface PlanetTexture {
+  kind: PlanetTextureKind;
+  baseColor: string;       // primary surface color (oklch)
+  secondaryColor: string;  // accent color (bands, ice caps, craters)
+  accentColor: string;     // highlight / storm / glow
+  atmosphereColor?: string; // atmospheric halo color (earth/venus)
+  ringColor?: string;       // saturn-style ring
+  hasRing?: boolean;
+}
+
 export interface Planet {
   id: PlanetId;
   name: string;
@@ -120,6 +141,7 @@ export interface Planet {
   gravity: string;
   color: string;
   gradient: string;
+  texture: PlanetTexture;
   description: string;
   interestingFacts: string[];
   scientificData: { label: string; value: string }[];

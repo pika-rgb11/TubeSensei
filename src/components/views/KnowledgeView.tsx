@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { StarField } from "@/components/common/StarField";
 import { GlassCard } from "@/components/common/GlassCard";
+import { PlanetVisual } from "@/components/common/PlanetVisual";
 import { PlanetCard } from "@/components/cards/PlanetCard";
 import { useAppStore } from "@/store/app-store";
 import { planets, cosmicObjects } from "@/lib/data/cosmos";
@@ -168,17 +169,12 @@ function SolarSystemDiagram({ onSelect }: { onSelect: (p: PlanetType) => void })
   return (
     <div className="relative h-64 md:h-80 overflow-x-auto hide-scrollbar">
       <div className="relative min-w-[600px] h-full">
-        {/* Sun */}
+        {/* Sun (using PlanetVisual) */}
         <button
           onClick={() => onSelect(planets[0])}
           className="absolute top-1/2 left-2 -translate-y-1/2 z-10 group"
         >
-          <div className="relative h-10 w-10 rounded-full"
-            style={{
-              background: "radial-gradient(circle at 30% 30%, oklch(0.95 0.22 50), oklch(0.50 0.20 30))",
-              boxShadow: "0 0 40px oklch(0.85 0.20 60 / 0.6)",
-            }}
-          />
+          <PlanetVisual texture={planets[0].texture} size={48} showStars={false} />
           <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-[10px] font-medium group-hover:text-primary transition-colors whitespace-nowrap">
             Sun
           </div>
@@ -216,13 +212,9 @@ function SolarSystemDiagram({ onSelect }: { onSelect: (p: PlanetType) => void })
                 transform: `translate(${x}px, ${y - 5}px)`,
               }}
             >
-              <div
-                className="h-4 w-4 rounded-full transition-transform group-hover:scale-150"
-                style={{
-                  background: p.gradient,
-                  boxShadow: `0 0 12px ${p.color}`,
-                }}
-              />
+              <div className="transition-transform group-hover:scale-150">
+                <PlanetVisual texture={p.texture} size={16} showStars={false} />
+              </div>
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-[9px] font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 {p.name}
               </div>
@@ -275,26 +267,30 @@ function PlanetDetailModal({ planet, onClose }: { planet: PlanetType; onClose: (
           {/* Big planet visualization */}
           <div
             className="relative aspect-square rounded-2xl overflow-hidden flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, oklch(0.10 0.04 270), oklch(0.05 0.02 270))" }}
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 50% at 50% 50%, oklch(0.13 0.04 270) 0%, oklch(0.07 0.02 270) 70%, oklch(0.04 0.01 270) 100%)",
+            }}
           >
-            <StarField count={60} />
+            <StarField count={80} />
+            {/* Nebula glow behind the planet */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-25 blur-3xl pointer-events-none"
+              style={{ background: `radial-gradient(circle, ${planet.texture.baseColor}, transparent 70%)` }}
+            />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
                 <div className="absolute -inset-8 rounded-full border border-white/5 animate-spin-slow" />
-                <div className="absolute -inset-12 rounded-full border border-white/5 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "90s" }} />
+                <div
+                  className="absolute -inset-16 rounded-full border border-white/5 animate-spin-slow"
+                  style={{ animationDirection: "reverse", animationDuration: "90s" }}
+                />
                 <motion.div
                   initial={{ scale: 0.7, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.6 }}
-                  className="h-32 w-32 md:h-48 md:w-48 rounded-full"
-                  style={{
-                    background: planet.gradient,
-                    boxShadow: `0 0 60px ${planet.color}, inset -20px -20px 50px rgba(0,0,0,0.4)`,
-                  }}
                 >
-                  <div className="absolute inset-0 rounded-full opacity-30"
-                    style={{ background: "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 50%)" }}
-                  />
+                  <PlanetVisual texture={planet.texture} size={280} />
                 </motion.div>
               </div>
             </div>
