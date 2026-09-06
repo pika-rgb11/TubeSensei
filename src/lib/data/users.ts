@@ -106,7 +106,7 @@ export const defaultUser: UserState = {
   visited: ["atacama", "kennedy", "tteide"],
   saved: ["mauna-kea", "namib", "kiruna"],
   wishlist: ["cherry-springs", "alma", "hakos"],
-  attendedEvents: ["evt-spacex", "evt-perseids"],
+  attendedEvents: ["evt-artemis-2", "evt-perseids-2027"],
   photos: [
     { id: "p1", title: "Milky Way over Atacama", gradient: grad("oklch(0.30 0.15 280)", "oklch(0.10 0.04 250)", "oklch(0.05 0.02 270)"), date: "Aug 2025", location: "Atacama Desert" },
     { id: "p2", title: "Saturn V at KSC", gradient: grad("oklch(0.34 0.18 40)", "oklch(0.12 0.08 270)", "oklch(0.05 0.02 270)"), date: "Jun 2025", location: "Kennedy Space Center" },

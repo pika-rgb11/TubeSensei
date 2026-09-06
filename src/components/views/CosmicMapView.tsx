@@ -79,15 +79,24 @@ export function CosmicMapView() {
     const list: { id: string; lat: number; lng: number; type: "location" | "event"; name: string; meta: any }[] = [];
     if (activeLayer === "all" || activeLayer === "events") {
       const eventCoords: Record<string, { lat: number; lng: number }> = {
-        "evt-perseids": { lat: 41.66, lng: -77.81 },
-        "evt-eclipse": { lat: 28.27, lng: -16.64 },
-        "evt-spacex": { lat: 28.57, lng: -80.65 },
+        "evt-newmoon-sep26": { lat: 0, lng: 0 },
+        "evt-saturn-opposition": { lat: 28.76, lng: -17.88 },
+        "evt-orionids": { lat: 41.66, lng: -77.81 },
+        "evt-leonids": { lat: 52.87, lng: -118.08 },
+        "evt-jupiter-opposition": { lat: 19.82, lng: -155.47 },
         "evt-geminids": { lat: -23.66, lng: -67.01 },
-        "evt-aurora": { lat: 67.85, lng: 20.22 },
-        "evt-iss": { lat: 28.57, lng: -80.65 },
-        "evt-lunar": { lat: 19.82, lng: -155.47 },
-        "evt-conjunct": { lat: 28.27, lng: -16.64 },
-        "evt-fest": { lat: 28.27, lng: -16.64 },
+        "evt-quadrantids": { lat: 55.08, lng: -4.18 },
+        "evt-annular-eclipse": { lat: -34.60, lng: -58.38 },
+        "evt-lunar-eclipse-mar": { lat: 19.82, lng: -155.47 },
+        "evt-lyrids": { lat: 41.66, lng: -77.81 },
+        "evt-eta-aquarids": { lat: -43.88, lng: 170.47 },
+        "evt-total-eclipse-2027": { lat: 28.27, lng: -16.64 },
+        "evt-perseids-2027": { lat: 41.66, lng: -77.81 },
+        "evt-artemis-2": { lat: 28.57, lng: -80.65 },
+        "evt-starship-ift": { lat: 25.99, lng: -97.16 },
+        "evt-jasper-fest": { lat: 52.87, lng: -118.08 },
+        "evt-aurora-forecast": { lat: 67.85, lng: 20.22 },
+        "evt-iss-sept": { lat: 28.57, lng: -80.65 },
       };
       events.forEach((e) => {
         const c = eventCoords[e.id] ?? { lat: 30, lng: 0 };
