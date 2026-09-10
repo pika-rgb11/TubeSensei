@@ -2,5 +2,5 @@
 module.exports = {
   siteUrl: 'https://tubesenseii.online',
   generateRobotsTxt: true,
-  outDir: './public',
+  outDir: 'out',
 }
