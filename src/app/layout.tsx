@@ -49,6 +49,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Cosmos Voyages",
+              "url": "https://tubesenseii.online",
+              "description": "Explore the world's best stargazing locations, observatories, dark-sky destinations, space events, and cosmic experiences.",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://tubesenseii.online/?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${display.variable} antialiased bg-background text-foreground`}
         style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
