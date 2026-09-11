@@ -615,6 +615,42 @@ export function HomeView() {
           })
         }}
       />
+      {/* Featured Stargazing Destinations Comparison Table */}
+      <section className="max-w-4xl mx-auto px-4 py-12">
+        <h2 className="text-2xl font-bold text-center mb-6 text-white">Top Stargazing Destinations Compared</h2>
+        <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5 backdrop-blur-md">
+          <table className="w-full text-left text-sm text-gray-300">
+            <thead className="bg-white/10 text-white font-semibold border-b border-white/10">
+              <tr>
+                <th className="p-3">Destination</th>
+                <th className="p-3">Bortle Scale</th>
+                <th className="p-3">Best Time</th>
+                <th className="p-3">Key Highlight</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/10">
+              <tr>
+                <td className="p-3 font-medium text-white">Atacama Desert, Chile</td>
+                <td className="p-3">Class 1 (Excellent)</td>
+                <td className="p-3">May – Sep</td>
+                <td className="p-3">ALMA Observatory & Milky Way clarity</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium text-white">Mauna Kea, Hawaii</td>
+                <td className="p-3">Class 1 (Excellent)</td>
+                <td className="p-3">Year-round</td>
+                <td className="p-3">High-altitude summit stargazing</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium text-white">Aoraki Mackenzie, NZ</td>
+                <td className="p-3">Class 2 (Truly Dark)</td>
+                <td className="p-3">Oct – Mar</td>
+                <td className="p-3">Southern Lights (Aurora Australis)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
    {/* FAQ Section */}
       <section className="max-w-4xl mx-auto px-4 py-16">
         <script
