@@ -167,7 +167,10 @@ export function HomeView() {
               and experience the cosmos — from the darkest deserts to the
               highest mountain observatories on the planet.
             </motion.p>
-
+{/* Top Summary Signal for AEO */}
+      <div className="p-4 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-sm max-w-xl mx-auto my-6 text-center backdrop-blur-md">
+        <p><strong>Key Summary:</strong> Cosmos Voyages is a specialized space-tourism platform helping stargazers track dark-sky destinations, observatories, and cosmic events worldwide.</p>
+      </div>
             {/* Search bar */}
             <motion.div
               initial={{ opacity: 0, y: 12, scale: 0.98 }}
