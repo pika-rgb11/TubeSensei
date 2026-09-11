@@ -595,6 +595,23 @@ export function HomeView() {
           </div>
         </GlassCard>
         </section>
+        {/* Organization Schema for GEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Cosmos Voyages",
+            "url": "https://www.tubesenseii.online",
+            "logo": "https://www.tubesenseii.online/logo.svg",
+            "sameAs": [
+              "https://twitter.com/cosmosvoyages",
+              "https://instagram.com/cosmosvoyages"
+            ]
+          })
+        }}
+      />
    {/* FAQ Section */}
       <section className="max-w-4xl mx-auto px-4 py-16">
         <script
