@@ -21,8 +21,10 @@ const display = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Cosmos Voyages — Explore the Universe. From Earth.",
-  description:
-    "Discover the world's best stargazing locations, observatories, dark-sky destinations, space events, and cosmic experiences. Travel isn't only across Earth — it's an experience of the universe.",
+  description: "Discover the world's best stargazing spots, dark-sky reserves, and space events. Plan your celestial journey with Cosmos Voyages.",
+  alternates: {
+    canonical: "https://www.tubesenseii.online/",
+  },
   keywords: [
     "stargazing", "astrotourism", "dark sky", "observatory", "planetarium",
     "space events", "meteor showers", "eclipse", "space tourism", "cosmic",
@@ -31,9 +33,18 @@ export const metadata: Metadata = {
   icons: { icon: "/logo.svg" },
   openGraph: {
     title: "Cosmos Voyages — Explore the Universe. From Earth.",
-    description: "Astro-tourism for the modern explorer. Discover stargazing locations, observatories, and cosmic events.",
+    description: "Discover the world's best stargazing spots, dark-sky reserves, and space events.",
+    url: "https://www.tubesenseii.online/",
     siteName: "Cosmos Voyages",
     type: "website",
+    images: [
+      {
+        url: "https://www.tubesenseii.online/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Cosmos Voyages Stargazing Banner",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
