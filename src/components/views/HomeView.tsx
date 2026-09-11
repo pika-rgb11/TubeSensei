@@ -34,9 +34,9 @@ export function HomeView() {
 
   const trending = locations.filter((l) => l.trending).slice(0, 6);
   const bestStargazing = locations.filter((l) => ["dark-sky", "stargazing"].includes(l.category)).slice(0, 3);
-  const featuredObservatories = locations.filter((l) => l.observatory || l.category === "observatory").slice(0, 3).length
-    ? locations.filter((l) => l.category === "observatory").slice(0, 3)
-    : locations.filter((l) => l.featured && l.category === "observatory").slice(0, 3);
+  const featuredObservatories = locations.filter((l: any) => l.observatory || l.category === "observatory").slice(0, 3).length 
+    ? locations.filter((l: any) => l.observatory || l.category === "observatory").slice(0, 3)
+    : locations.filter((l: any) => l.featured && l.category === "observatory").slice(0, 3);
   const upcomingEvents = events.slice(0, 3);
 
   const handleSearch = () => {
@@ -714,7 +714,7 @@ export function HomeView() {
           </p>
         </div>
 
-        <div className="space-y-4">
+       <div className="space-y-4">
           <div className="p-5 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm">
             <h3 className="font-semibold text-lg text-white mb-2">What is astrotourism?</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -733,7 +733,7 @@ export function HomeView() {
               You can explore curated stargazing spots, track upcoming cosmic events, observatories, and book specialized astrotourism experiences directly through Cosmos Voyages.
             </p>
           </div>
-        </div>
-      </section>
-  );
-}
+        </section>
+       </div>
+     );
+    }
