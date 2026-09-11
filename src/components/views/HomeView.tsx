@@ -665,14 +665,13 @@ export function HomeView() {
             </button>
           </div>
         </GlassCard>
-      </section>
-    </div>
-    {/* FAQ Section - Bilkul Bottom (Footer ke upar) */}
+        </section>
+   {/* FAQ Section */}
       <section className="max-w-4xl mx-auto px-4 py-16">
-        <div
+        <script
+          type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: `<script type="application/ld+json">
-            {
+            __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "FAQPage",
               "mainEntity": [
@@ -701,10 +700,10 @@ export function HomeView() {
                   }
                 }
               ]
-            }
-            </script>`
+            })
           }}
         />
+
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-white mb-3">
             Frequently Asked Questions
@@ -714,7 +713,7 @@ export function HomeView() {
           </p>
         </div>
 
-       <div className="space-y-4">
+        <div className="space-y-4">
           <div className="p-5 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm">
             <h3 className="font-semibold text-lg text-white mb-2">What is astrotourism?</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -733,7 +732,8 @@ export function HomeView() {
               You can explore curated stargazing spots, track upcoming cosmic events, observatories, and book specialized astrotourism experiences directly through Cosmos Voyages.
             </p>
           </div>
-        </section>
-       </div>
-     );
-    }
+        </div>
+      </section>
+    </div>
+  );
+}
