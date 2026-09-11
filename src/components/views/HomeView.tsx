@@ -667,5 +667,73 @@ export function HomeView() {
         </GlassCard>
       </section>
     </div>
+    {/* FAQ Section - Bilkul Bottom (Footer ke upar) */}
+      <section className="max-w-4xl mx-auto px-4 py-16">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `<script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "What is astrotourism?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Astrotourism is a form of travel focused on viewing astronomical attractions, night skies, dark-sky reserves, observatories, and celestial events like meteor showers and eclipses."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Where are the best stargazing locations?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The best stargazing locations are certified dark-sky destinations, remote deserts, high-altitude mountains, and official dark-sky parks with minimal light pollution."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How can I plan a space event trip with Cosmos Voyages?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can explore curated stargazing spots, track upcoming cosmic events, observatories, and book specialized astrotourism experiences directly through Cosmos Voyages."
+                  }
+                }
+              ]
+            }
+            </script>`
+          }}
+        />
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-3">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-gray-400 text-base">
+            Everything you need to know about astrotourism, stargazing trips, and cosmic experiences.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="p-5 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <h3 className="font-semibold text-lg text-white mb-2">What is astrotourism?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Astrotourism is a form of travel focused on viewing astronomical attractions, night skies, dark-sky reserves, observatories, and celestial events like meteor showers and eclipses.
+            </p>
+          </div>
+          <div className="p-5 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <h3 className="font-semibold text-lg text-white mb-2">Where are the best stargazing locations?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              The best stargazing locations are certified dark-sky destinations, remote deserts, high-altitude mountains, and official dark-sky parks with minimal light pollution.
+            </p>
+          </div>
+          <div className="p-5 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <h3 className="font-semibold text-lg text-white mb-2">How can I plan a space event trip with Cosmos Voyages?</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              You can explore curated stargazing spots, track upcoming cosmic events, observatories, and book specialized astrotourism experiences directly through Cosmos Voyages.
+            </p>
+          </div>
+        </div>
+      </section>
   );
 }
