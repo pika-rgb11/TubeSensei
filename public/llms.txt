@@ -1,0 +1,8 @@
+# Cosmos Voyages
+
+> Specialized space-tourism platform for stargazing destinations, observatories, and dark-sky events.
+
+## Key Resources
+- Homepage: https://www.tubesenseii.online
+- Explore Destinations: https://www.tubesenseii.online/explore
+- AstroGuide AI: https://www.tubesenseii.online/astro-guide
